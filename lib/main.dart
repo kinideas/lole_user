@@ -1,73 +1,91 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lole/constants/routes.dart';
 import 'package:lole/firebase_options.dart';
+import 'package:lole/screens/auth/login_screen.dart';
+import 'package:provider/provider.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(
+    const LoleApp(),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoleApp extends StatefulWidget {
+  const LoleApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<LoleApp> createState() => _LoleAppState();
+}
+
+class _LoleAppState extends State<LoleApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  // ignore: must_call_super
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppRouter _appRouter = AppRouter();
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      title: 'Lole Delivery',
+      initialRoute: "/login",
+      routes: _appRouter.allRoutes,
+      navigatorKey: navigatorKey,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+Future<bool> checkIfAuthenticated() async {
+  // try {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  //   if (pref.getString('id') != null ||
+  //       FirebaseAuth.instance.currentUser != null) {
+  //     return true;
+  //   }
+  //   return false;
+  // } catch (e) {
+  //   return false;
+  // }
+  return true;
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class LandingPage extends StatefulWidget {
+  static String routeName = "/";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  const LandingPage({Key? key}) : super(key: key);
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  bool isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return LoginScreen();
   }
 }
