@@ -1,4 +1,4 @@
-package com.example.lole
+package com.kinideas.lole
 
 import io.flutter.embedding.android.FlutterActivity
 

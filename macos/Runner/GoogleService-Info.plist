@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>587867602782-iii5s27ni7373jvdi82tekf531jt94dr.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.587867602782-iii5s27ni7373jvdi82tekf531jt94dr</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCvSp2KopVPvbYka5tPMYS8hiXfqXhNAUg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>587867602782</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.lole</string>
+	<key>PROJECT_ID</key>
+	<string>lole-cargo-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lole-cargo-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:587867602782:ios:25d30565adb63c9b06d9cf</string>
+</dict>
+</plist>
