@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:lole/components/functions.dart';
+import 'package:lole/components/lole_logo.dart';
+import 'package:lole/components/lole_spinner.dart';
 import 'package:lole/components/section_title.dart';
 import 'package:lole/screens/auth/components/custom_form_field.dart';
-import 'package:lole/screens/auth/components/password_reset_screen.dart';
+import 'package:lole/screens/auth/otp_request_screen.dart';
+import 'package:lole/screens/auth/password_reset_screen.dart';
 import 'package:lole/screens/auth/components/primary_button.dart';
 import 'package:lole/screens/auth/register_screen.dart';
+import 'package:lole/screens/home_screen.dart';
+import 'package:lole/services/provider/AuthenticationProvider.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static String routeName = "/login";
@@ -14,10 +21,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late AuthenticationProvider _authenticationProvider;
+  TextEditingController emailInputController = TextEditingController();
+  TextEditingController passwordInputController = TextEditingController();
+
+  @override
+  void initState() {
+    _authenticationProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailInputController = TextEditingController();
-    TextEditingController passwordInputController = TextEditingController();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -30,18 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Lole Logo
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    110,
-                  ),
-                ),
-                child: Image.asset("assets/icons/Lole.png"),
-              ),
+            const Center(
+              child: LoleLogo(),
             ),
 
             // Spacer
@@ -107,9 +118,46 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             // Sign In Button
-            CustomPrimaryButton(
-              label: "Sign In",
-              onTap: () {},
+            InkWell(
+              onTap: () async {
+                if (emailInputController.text == "") {
+                  kShowToast(message: "Email is required");
+                }
+
+                // null password
+                else if (passwordInputController.text == "") {
+                  kShowToast(message: "Password is required");
+                }
+
+                // success
+                else {
+                  String result =
+                      await _authenticationProvider.loginWithEmailAndPassword(
+                    email: emailInputController.text,
+                    password: passwordInputController.text,
+                  );
+
+                  if (result == "Successfully Logged In") {
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  }
+                }
+              },
+              child: Consumer<AuthenticationProvider>(
+                builder: (context, authenticationProvider, _) {
+                  if (authenticationProvider.isLoading) {
+                    return const LoleSpinner();
+                  } else {
+                    return const CustomPrimaryButton(
+                      label: "Sign In",
+                    );
+                  }
+                },
+              ),
             ),
 
             // Spacer
@@ -129,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Spacer
             const SizedBox(
-              height: 28,
+              height: 26,
             ),
 
             Row(
@@ -137,7 +185,19 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // Google Login
                 InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    String result =
+                        await _authenticationProvider.loginWithGoogle();
+
+                    if (result == "Successfully Logged In") {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    }
+                  },
                   child: SizedBox(
                     width: 40,
                     height: 40,
@@ -147,12 +207,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Spacer
                 const SizedBox(
-                  width: 40,
+                  width: 36,
                 ),
 
                 // Phone Login
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const OTPRequestScreen(),
+                      ),
+                    );
+                  },
                   child: SizedBox(
                     width: 40,
                     height: 40,
@@ -164,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Spacer
             const SizedBox(
-              height: 36,
+              height: 30,
             ),
 
             InkWell(

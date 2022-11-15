@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lole/constants/routes.dart';
 import 'package:lole/firebase_options.dart';
-import 'package:lole/screens/auth/login_screen.dart';
+import 'package:lole/services/api/UtilService.dart';
+import 'package:lole/services/provider/AuthenticationProvider.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -16,7 +18,12 @@ void main() async {
   );
 
   runApp(
-    const LoleApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+      ],
+      child: const LoleApp(),
+    ),
   );
 }
 
@@ -41,51 +48,20 @@ class _LoleAppState extends State<LoleApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final AppRouter _appRouter = AppRouter();
+    final AppRouter appRouter = AppRouter();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lole Delivery',
-      initialRoute: "/login",
-      routes: _appRouter.allRoutes,
+      initialRoute: "/otp",
+      routes: appRouter.allRoutes,
       navigatorKey: navigatorKey,
     );
   }
 }
 
-Future<bool> checkIfAuthenticated() async {
-  // try {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
+Future<Map<String, dynamic>> checkIfAuthenticated() async {
+  UtilService utilService = UtilService();
+  String result = await utilService.getInfoFromCache(key: "currentUser");
 
-  //   if (pref.getString('id') != null ||
-  //       FirebaseAuth.instance.currentUser != null) {
-  //     return true;
-  //   }
-  //   return false;
-  // } catch (e) {
-  //   return false;
-  // }
-  return true;
-}
-
-class LandingPage extends StatefulWidget {
-  static String routeName = "/";
-
-  const LandingPage({Key? key}) : super(key: key);
-
-  @override
-  State<LandingPage> createState() => _LandingPageState();
-}
-
-class _LandingPageState extends State<LandingPage> {
-  bool isAuthenticated = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LoginScreen();
-  }
+  return jsonDecode(result);
 }
