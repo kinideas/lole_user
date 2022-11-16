@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lole/components/functions.dart';
+import 'package:lole/constants/functions.dart';
 import 'package:lole/components/lole_logo.dart';
 import 'package:lole/components/lole_spinner.dart';
 import 'package:lole/components/section_title.dart';
@@ -120,9 +120,10 @@ class _OTPRequestScreenState extends State<OTPRequestScreen> {
                 // // success
                 else {
                   String result = await _authenticationProvider.requestOTP(
-                    "+251${phoneNumberInputController.text}",
-                    context,
-                    "${firstNameInputController.text} ${lastNameInputController.text}",
+                    phoneNumber: "+251${phoneNumberInputController.text}",
+                    context: context,
+                    fullName:
+                        "${firstNameInputController.text} ${lastNameInputController.text}",
                   );
                 }
               },
