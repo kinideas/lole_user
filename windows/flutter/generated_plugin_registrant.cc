@@ -11,4 +11,9 @@
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   GeolocatorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("GeolocatorWindows"));
+#include <smart_auth/smart_auth_plugin.h>
+
+void RegisterPlugins(flutter::PluginRegistry* registry) {
+  SmartAuthPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("SmartAuthPlugin"));
 }

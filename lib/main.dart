@@ -1,29 +1,67 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:lole/constants/routes.dart';
 import 'package:lole/firebase_options.dart';
-import 'package:lole/screens/homepage.dart';
+import 'package:lole/services/api/UtilService.dart';
+import 'package:lole/services/provider/AuthenticationProvider.dart';
+import 'package:provider/provider.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+      ],
+      child: const LoleApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoleApp extends StatefulWidget {
+  const LoleApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<LoleApp> createState() => _LoleAppState();
+}
+
+class _LoleAppState extends State<LoleApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  // ignore: must_call_super
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppRouter appRouter = AppRouter();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home:HomePage()
+      title: 'Lole Delivery',
+      initialRoute: "/otp",
+      routes: appRouter.allRoutes,
+      navigatorKey: navigatorKey,
     );
   }
 }
 
+Future<Map<String, dynamic>> checkIfAuthenticated() async {
+  UtilService utilService = UtilService();
+  String result = await utilService.getInfoFromCache(key: "currentUser");
+
+  return jsonDecode(result);
+}
