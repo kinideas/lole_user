@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lole/screens/auth/login_screen.dart';
+import 'package:lole/screens/homepage.dart';
 import 'package:lole/services/api/TrackingService.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
 import 'package:lole/services/provider/TrackingProvider.dart';
@@ -32,6 +34,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
     int currentLong = 0;
     final TrackingService trackingService = TrackingService();
     int currentLat = 0;
+
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -63,11 +66,19 @@ class _TrackingScreenState extends State<TrackingScreen> {
             Center(
               child: InkWell(
                 onTap: () async {
-                  currentLat++;
-                  currentLong++;
-                  _trackingProvider.updateLocation(
-                    longitude: currentLat.toString(),
-                    latitude: currentLat.toString(),
+                  // currentLat++;
+                  // currentLong++;
+                  // Position position = await Geolocator.getCurrentPosition(
+                  //   desiredAccuracy: LocationAccuracy.high,
+                  // );
+                  // _trackingProvider.updateLocation(
+                  //   longitude: position.longitude.toString(),
+                  //   latitude: position.latitude.toString(),
+                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (builder) => HomePage(),
+                    ),
                   );
                 },
                 child: Container(
@@ -75,6 +86,30 @@ class _TrackingScreenState extends State<TrackingScreen> {
                   height: 30,
                   color: Colors.blue,
                   child: const Center(child: Text("Update")),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: InkWell(
+                onTap: () async {
+                  // currentLat++;
+                  // currentLong++;
+                  Position position = await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.high,
+                  );
+                  _trackingProvider.updateLocation(
+                    longitude: position.longitude.toString(),
+                    latitude: position.latitude.toString(),
+                  );
+                },
+                child: Container(
+                  width: 200,
+                  height: 30,
+                  color: Colors.yellow,
+                  child: const Center(child: Text("Logout")),
                 ),
               ),
             ),
