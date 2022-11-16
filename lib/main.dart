@@ -6,6 +6,7 @@ import 'package:lole/constants/routes.dart';
 import 'package:lole/firebase_options.dart';
 import 'package:lole/services/api/UtilService.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
+import 'package:lole/services/provider/TrackingProvider.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -21,6 +22,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => TrackingProvider()),
       ],
       child: const LoleApp(),
     ),
@@ -52,7 +54,7 @@ class _LoleAppState extends State<LoleApp> with WidgetsBindingObserver {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lole Delivery',
-      initialRoute: "/otp",
+      initialRoute: "/",
       routes: appRouter.allRoutes,
       navigatorKey: navigatorKey,
     );
