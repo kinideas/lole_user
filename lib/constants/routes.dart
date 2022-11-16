@@ -4,6 +4,7 @@ import 'package:lole/screens/auth/otp_verification_screen.dart';
 import 'package:lole/screens/auth/password_reset_screen.dart';
 import 'package:lole/screens/auth/login_screen.dart';
 import 'package:lole/screens/auth/register_screen.dart';
+import 'package:lole/screens/homepage.dart';
 import 'package:lole/screens/landing_screen.dart';
 
 class AppRouter {
@@ -13,6 +14,7 @@ class AppRouter {
     RegisterScreen.routeName: (context) => const RegisterScreen(),
     PasswordResetScreen.routeName: (context) => const PasswordResetScreen(),
     OTPRequestScreen.routeName: (context) => const OTPRequestScreen(),
-    OTPVerification.routeName: (context) => const OTPVerification()
+    OTPVerification.routeName: (context) => const OTPVerification(),
+    HomePage.routeName:(context) => const HomePage()
   };
 }

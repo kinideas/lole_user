@@ -9,7 +9,7 @@ import '../services/api/placesapi.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
+static String routeName = "/home";
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -28,7 +28,7 @@ double lati=8.980603;
 double long=38.757759;
 //LatLng lat= const LatLng(8.980603, 38.757759);
   getLocation()async{
-   // LocationPermission permission1 = await Geolocator.requestPermission();
+   LocationPermission permission1 = await Geolocator.requestPermission();
     // LocationPermission permission = await Geolocator.checkPermission();
     
  Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);

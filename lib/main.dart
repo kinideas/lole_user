@@ -52,7 +52,7 @@ class _LoleAppState extends State<LoleApp> with WidgetsBindingObserver {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lole Delivery',
-      initialRoute: "/otp",
+      initialRoute: "/home",
       routes: appRouter.allRoutes,
       navigatorKey: navigatorKey,
     );
