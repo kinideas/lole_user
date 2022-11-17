@@ -4,7 +4,6 @@ import 'package:lole/components/lole_spinner.dart';
 import 'package:lole/screens/auth/login_screen.dart';
 import 'package:lole/screens/home_screen.dart';
 import 'package:lole/services/api/UtilService.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingPage extends StatefulWidget {
   static String routeName = "/";
@@ -41,7 +40,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: FutureBuilder(
@@ -59,9 +58,9 @@ class _LandingPageState extends State<LandingPage> {
               return const HomeScreen();
             }
 
-            // loded & not
+            // loaded & not
             else {
-              return LoginScreen();
+              return const LoginScreen();
             }
           },
         ),
