@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lole/components/placeSearchWidget.dart';
+import 'package:lole/services/api/TrackingService.dart';
 import 'package:uuid/uuid.dart';
 import '../components/textformfield.dart';
 import '../services/api/placesapi.dart';
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     
    getLocation();
     super.initState();
@@ -33,10 +34,10 @@ double long=38.757759;
     // LocationPermission permission = await Geolocator.checkPermission();
     
  Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
- markers.add(Marker(
-  position: LatLng(position.latitude,position.longitude),
-  icon: BitmapDescriptor.defaultMarkerWithHue(20),
-  markerId: MarkerId('sender')));
+//  markers.add(Marker(
+//   position: LatLng(position.latitude,position.longitude),
+//   icon: BitmapDescriptor.defaultMarkerWithHue(20),
+//   markerId: MarkerId('sender')));
  //LatLng loc=LatLng(position.latitude,position.longitude);
  setState(() {
    lati=position.latitude;
@@ -92,7 +93,8 @@ double long=38.757759;
             borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
                    ),
             child: InkWell(
-              onTap: () {
+              onTap: () async{
+                await TrackingService().getDriverLocation('eBigVDsg2mTiywb41GaN');
                  showModalBottomSheet(
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
@@ -149,19 +151,45 @@ double long=38.757759;
                                  // ignore: unused_local_variable
                         
                            LatLng   location1= await PlaceApiProvider(sessionToken).getPlaceDetailFromId(result!.placeId);
-                        
-                          print(result.description);
-                         setState(() {
-                              if(markers.length>=2){
-                                 Marker lastelement=markers.elementAt(1);
+                           setState(() {
+                              if(markers.isNotEmpty){
+                                 Marker lastelement=markers.elementAt(0);
                               markers.remove(lastelement);
-                            }
-                            markers.add(Marker(
+                                markers.add(Marker(
                             position: location1,
                             icon: BitmapDescriptor.defaultMarkerWithHue(100),
                             markerId: MarkerId('receiver')));
+                            }
+                            else {
+                                markers.add(Marker(
+                            position: location1,
+                            icon: BitmapDescriptor.defaultMarkerWithHue(100),
+                            markerId: MarkerId('receiver')));
+                            }
+                          
                          });
-                            print('@@${location.longitude}');
+                          Timer.periodic(Duration(seconds: 2), (timer) async{ 
+                             Map<String,dynamic> driversLocation= await TrackingService().getDriverLocation('eBigVDsg2mTiywb41GaN');
+                       
+                           LatLng position=LatLng(double.parse(driversLocation['lat']) ,double.parse(driversLocation['long']));
+                         setState(() {
+                             if(markers.length>=2){
+                            Marker lastelement=markers.elementAt(1);
+                            markers.remove(lastelement);
+                           }
+                        markers.add(
+                          Marker(
+                            position: position,
+                            icon: BitmapDescriptor.defaultMarker,
+                            
+                            markerId: MarkerId('driver'))
+                        );
+                         });
+                          });
+                          
+                          print(result.description);
+                         
+                           // print('@@${location.longitude}');
 
                            
                            

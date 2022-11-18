@@ -17,7 +17,7 @@ class AppRouter {
     OTPRequestScreen.routeName: (context) => const OTPRequestScreen(),
 
     OTPVerification.routeName: (context) =>
-        const OTPVerification(fullName: "", phoneNumber: "")
+        const OTPVerification(fullName: "", phoneNumber: ""),
 
  
     HomePage.routeName:(context) => const HomePage()

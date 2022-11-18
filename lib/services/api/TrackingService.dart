@@ -24,4 +24,10 @@ class TrackingService {
         .doc(driverId)
         .snapshots();
   }
+  Future<Map<String,dynamic>> getDriverLocation(String driverId) async {
+    var doc=await locationCollection.doc(driverId).get();
+      var hey= doc.data() as Map<String,dynamic>;
+      print('called');
+    return hey;
+  }
 }
