@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 
 class Place {
@@ -48,7 +50,6 @@ class PlaceApiProvider {
     final request =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&components=country:et&key=$androidKey&sessiontoken=$sessionToken';
     final response = await client.get(Uri.parse(request));
-
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
       if (result['status'] == 'OK') {
@@ -66,35 +67,39 @@ class PlaceApiProvider {
     }
   }
 
-  Future<Place> getPlaceDetailFromId(String placeId) async {
+  Future<LatLng> getPlaceDetailFromId(String placeId) async {
 
-    final request =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=address_component&key=$androidKey&sessiontoken=$sessionToken';
+    final request = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$androidKey';
     final response = await client.get(Uri.parse(request));
-
+    
     if (response.statusCode == 200) {
+      //print('@@@'+'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=address_component&key=$androidKey&sessiontoken=$sessionToken');
       final result = json.decode(response.body);
       if (result['status'] == 'OK') {
-        final components =
-            result['result']['address_components'] as List<dynamic>;
+        final lat =
+            result['result']['geometry']['location']['lat'];
+            final long =
+            result['result']['geometry']['location']['lng'];
         // build result
-        final place = Place(city: '',street: '',streetNumber: '',zipCode: '');
-        components.forEach((c) {
-          final List type = c['types'];
-          if (type.contains('street_number')) {
-            place.streetNumber = c['long_name'];
-          }
-          if (type.contains('route')) {
-            place.street = c['long_name'];
-          }
-          if (type.contains('locality')) {
-            place.city = c['long_name'];
-          }
-          if (type.contains('postal_code')) {
-            place.zipCode = c['long_name'];
-          }
-        });
-        return place;
+        // final place = Place(city: '',street: '',streetNumber: '',zipCode: '');
+        // components.forEach((c) {
+        //   final List type = c['types'];
+        //   if (type.contains('street_number')) {
+        //     place.streetNumber = c['long_name'];
+        //   }
+        //   if (type.contains('route')) {
+        //     place.street = c['long_name'];
+        //   }
+        //   if (type.contains('locality')) {
+        //     place.city = c['long_name'];
+        //   }
+        //   if (type.contains('postal_code')) {
+        //     place.zipCode = c['long_name'];
+        //   }
+        // });
+        print(lat);
+        LatLng position=LatLng(lat, long);
+        return position;
       }
       throw Exception(result['error_message']);
     } else {

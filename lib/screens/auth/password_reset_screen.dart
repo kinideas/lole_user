@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lole/components/functions.dart';
+import 'package:lole/constants/functions.dart';
 import 'package:lole/components/lole_logo.dart';
 import 'package:lole/components/lole_spinner.dart';
 import 'package:lole/components/section_title.dart';

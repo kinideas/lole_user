@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lole/components/functions.dart';
+import 'package:http/http.dart';
+import 'package:lole/constants/constants.dart';
+import 'package:lole/constants/functions.dart';
 import 'package:lole/services/api/ErrorLoggingService.dart';
 import 'package:lole/services/api/UtilService.dart';
 
@@ -64,6 +66,14 @@ class AuthenticationService {
       kShowToast(message: "Something went wrong");
       return 'Unknown Error Occurred';
     }
+  }
+
+  Future<bool> saveUserToServer() async {
+    final Response response = await post(
+      Uri.parse("$loleBaseUrl/client"),
+    );
+
+    return true;
   }
 
   Future<String> loginUserWithEmailAndPassword(

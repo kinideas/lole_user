@@ -26,12 +26,17 @@ class _HomePageState extends State<HomePage> {
  
 double lati=8.980603;
 double long=38.757759;
+  Set<Marker> markers={};
 //LatLng lat= const LatLng(8.980603, 38.757759);
   getLocation()async{
    LocationPermission permission1 = await Geolocator.requestPermission();
     // LocationPermission permission = await Geolocator.checkPermission();
     
  Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+ markers.add(Marker(
+  position: LatLng(position.latitude,position.longitude),
+  icon: BitmapDescriptor.defaultMarkerWithHue(20),
+  markerId: MarkerId('sender')));
  //LatLng loc=LatLng(position.latitude,position.longitude);
  setState(() {
    lati=position.latitude;
@@ -57,8 +62,10 @@ double long=38.757759;
     // TODO: implement dispose
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    late LatLng location=LatLng(lati, long);
      final CameraPosition _kGooglePlex =   CameraPosition(
     target: LatLng(lati,long),
     zoom: 15,
@@ -68,6 +75,7 @@ double long=38.757759;
       body: Stack(
         children: [
           GoogleMap(
+            markers:markers,
             mapType: MapType.normal,
             initialCameraPosition: _kGooglePlex,
             onMapCreated: (GoogleMapController controller) {
@@ -132,14 +140,35 @@ double long=38.757759;
                                   context: context,
                                   delegate: AddressSearch( sessionToken:sessionToken ),
                                 );
-                                 // ignore: unused_local_variable
-                                 
-                                // This will change the text displayed in the TextField
-                                if (result != null) {
+                                 if (result != null) {
                                   setState(() {
                     placesController.text = result.description;
                                   });
                                 }
+                                late PlaceApiProvider api;
+                                 // ignore: unused_local_variable
+                        
+                           LatLng   location1= await PlaceApiProvider(sessionToken).getPlaceDetailFromId(result!.placeId);
+                        
+                          print(result.description);
+                         setState(() {
+                              if(markers.length>=2){
+                                 Marker lastelement=markers.elementAt(1);
+                              markers.remove(lastelement);
+                            }
+                            markers.add(Marker(
+                            position: location1,
+                            icon: BitmapDescriptor.defaultMarkerWithHue(100),
+                            markerId: MarkerId('receiver')));
+                         });
+                            print('@@${location.longitude}');
+
+                           
+                           
+                                //  print('@@@${location.latitude}');
+                                //  print('@@@${location.longitude}');
+                                // This will change the text displayed in the TextField
+                               
                               },
                               decoration: InputDecoration(
                                 icon: Container(

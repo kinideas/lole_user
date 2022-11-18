@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lole/components/functions.dart';
+import 'package:lole/constants/functions.dart';
 import 'package:lole/components/lole_logo.dart';
 import 'package:lole/components/lole_spinner.dart';
 import 'package:lole/components/section_title.dart';
@@ -9,6 +9,7 @@ import 'package:lole/screens/auth/password_reset_screen.dart';
 import 'package:lole/screens/auth/components/primary_button.dart';
 import 'package:lole/screens/auth/register_screen.dart';
 import 'package:lole/screens/home_screen.dart';
+import 'package:lole/screens/tracking/tracking_screen.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const TrackingScreen(),
                       ),
                     );
                   }
@@ -193,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => const TrackingScreen(),
                         ),
                       );
                     }

@@ -6,7 +6,7 @@ import 'package:lole/screens/home_screen.dart';
 import 'package:lole/services/api/AuthenticationService.dart';
 import 'package:lole/services/api/UtilService.dart';
 
-import '../../components/functions.dart';
+import '../../constants/functions.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool isLoading = false;
