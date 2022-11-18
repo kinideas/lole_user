@@ -15,7 +15,12 @@ class AppRouter {
     RegisterScreen.routeName: (context) => const RegisterScreen(),
     PasswordResetScreen.routeName: (context) => const PasswordResetScreen(),
     OTPRequestScreen.routeName: (context) => const OTPRequestScreen(),
-    OTPVerification.routeName: (context) => const OTPVerification(),
+
+    OTPVerification.routeName: (context) =>
+        const OTPVerification(fullName: "", phoneNumber: "")
+
+ 
     HomePage.routeName:(context) => const HomePage()
+
   };
 }

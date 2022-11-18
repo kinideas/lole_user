@@ -94,7 +94,8 @@ class AuthenticationProvider extends ChangeNotifier {
   late String _verificationId;
   late String _fullName;
 
-  Future requestOTP(phoneNumber, context, fullName) async {
+  Future requestOTP(
+      {required phoneNumber, required context, required fullName}) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -127,7 +128,11 @@ class AuthenticationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future verifyOTP(code, context) async {
+  Future verifyOTP(
+      {required code,
+      required context,
+      required String fullName,
+      required String phoneNumber}) async {
     try {
       isLoading = true;
       notifyListeners();

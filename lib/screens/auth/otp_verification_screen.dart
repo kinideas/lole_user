@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lole/components/lole_logo.dart';
 import 'package:lole/components/lole_spinner.dart';
@@ -5,14 +6,19 @@ import 'package:lole/components/section_title.dart';
 
 import 'package:lole/constants/colors.dart';
 import 'package:lole/screens/auth/otp_request_screen.dart';
+import 'package:lole/services/api/AuthenticationService.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 class OTPVerification extends StatefulWidget {
+  final String fullName;
+  final String phoneNumber;
   static String routeName = '/otp/verification';
 
-  const OTPVerification({Key? key}) : super(key: key);
+  const OTPVerification(
+      {Key? key, required this.phoneNumber, required this.fullName})
+      : super(key: key);
 
   @override
   _OTPVerificationState createState() => _OTPVerificationState();
@@ -36,7 +42,12 @@ class _OTPVerificationState extends State<OTPVerification> {
   void validator(context) async {
     AuthenticationProvider loginProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
-    await loginProvider.verifyOTP(code.text, context);
+    await loginProvider.verifyOTP(
+      code: code.text,
+      context: context,
+      fullName: widget.fullName,
+      phoneNumber: widget.phoneNumber,
+    );
   }
 
   @override
@@ -113,7 +124,35 @@ class _OTPVerificationState extends State<OTPVerification> {
                           showCursor: true,
                           length: 6,
                           onCompleted: (pin) async {
-                            await loginProvider.verifyOTP(pin, context);
+                            await loginProvider.verifyOTP(
+                              code: pin,
+                              context: context,
+                              phoneNumber: widget.phoneNumber,
+                              fullName: widget.fullName,
+                            );
+
+                            AuthenticationService _authenticationService =
+                                AuthenticationService();
+
+                            print("lole-view:sending request now");
+                            await _authenticationService
+                                .saveUserToServer(userInfo: {
+                              "FBUID": FirebaseAuth.instance.currentUser!.uid,
+                              "client_fullName": widget.fullName,
+                              "client_phone_number": widget.phoneNumber,
+                              "client_email": "",
+                              "clienttotal_mileage": "0",
+                              "trip_count": "0"
+                            });
+
+                            print("lole-view: ${{
+                              "FBUID": FirebaseAuth.instance.currentUser!.uid,
+                              "client_fullName": widget.fullName,
+                              "client_phone_number": widget.phoneNumber,
+                              "client_email": "",
+                              "clienttotal_mileage": "0",
+                              "trip_count": "0"
+                            }}");
                           },
                         );
                       },

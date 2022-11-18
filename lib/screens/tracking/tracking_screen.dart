@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_directions_api/google_directions_api.dart';
 import 'package:lole/screens/auth/login_screen.dart';
+import 'package:lole/screens/auth/register_screen.dart';
 import 'package:lole/screens/homepage.dart';
 import 'package:lole/services/api/TrackingService.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
@@ -16,11 +18,15 @@ class TrackingScreen extends StatefulWidget {
 }
 
 class _TrackingScreenState extends State<TrackingScreen> {
+  late AuthenticationProvider _authenticationProvider;
+
   late TrackingProvider _trackingProvider;
 
   @override
   void initState() {
     _trackingProvider = Provider.of<TrackingProvider>(context, listen: false);
+    _authenticationProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
     super.initState();
   }
 
@@ -31,15 +37,11 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int currentLong = 0;
-    final TrackingService trackingService = TrackingService();
-    int currentLat = 0;
-
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        color: Colors.red,
+        color: Colors.amber,
         child: Column(
           children: [
             const SizedBox(
@@ -75,11 +77,39 @@ class _TrackingScreenState extends State<TrackingScreen> {
                   //   longitude: position.longitude.toString(),
                   //   latitude: position.latitude.toString(),
                   // );
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (builder) => HomePage(),
-                    ),
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (builder) => HomePage(),
+                  //   ),
+                  // );
+                  DirectionsService.init(
+                      'AIzaSyC-zuw7SKLgnegrk8lKR_1XlKeEbyrSsOA');
+
+                  final directinosService = DirectionsService();
+
+                  // ignore: prefer_const_constructors
+                  final request = DirectionsRequest(
+                    origin: 'Tulu Dimtu, Addis Ababa, Ethiopia',
+                    destination: 'Summit Condominium, Addis Ababa, Ethiopia',
+                    travelMode: TravelMode.driving,
                   );
+
+                  directinosService.route(request,
+                      (DirectionsResult response, DirectionsStatus? status) {
+                    if (status == DirectionsStatus.ok) {
+                      // do something with successful response
+                      print(
+                        response.routes![0].legs![0].distance!.text.toString(),
+                      );
+
+                      print(
+                        response.routes![0].legs![0].duration!.text.toString(),
+                      );
+                    } else {
+                      // do something with error response
+                      print("Error Calculating distance");
+                    }
+                  });
                 },
                 child: Container(
                   width: 200,
@@ -89,21 +119,27 @@ class _TrackingScreenState extends State<TrackingScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Center(
               child: InkWell(
                 onTap: () async {
-                  // currentLat++;
-                  // currentLong++;
-                  Position position = await Geolocator.getCurrentPosition(
-                    desiredAccuracy: LocationAccuracy.high,
+                  // // currentLat++;
+                  // // currentLong++;
+                  // Position position = await Geolocator.getCurrentPosition(
+                  //   desiredAccuracy: LocationAccuracy.high,
+                  // );
+                  // _trackingProvider.updateLocation(
+                  //   longitude: position.longitude.toString(),
+                  //   latitude: position.latitude.toString(),
+                  // );
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (builder) => const LoginScreen(),
+                    ),
                   );
-                  _trackingProvider.updateLocation(
-                    longitude: position.longitude.toString(),
-                    latitude: position.latitude.toString(),
-                  );
+                  await _authenticationProvider.logOut();
                 },
                 child: Container(
                   width: 200,

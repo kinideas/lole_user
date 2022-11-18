@@ -120,9 +120,10 @@ class _OTPRequestScreenState extends State<OTPRequestScreen> {
                 // // success
                 else {
                   String result = await _authenticationProvider.requestOTP(
-                    "+251${phoneNumberInputController.text}",
-                    context,
-                    "${firstNameInputController.text} ${lastNameInputController.text}",
+                    phoneNumber: "+251${phoneNumberInputController.text}",
+                    context: context,
+                    fullName:
+                        "${firstNameInputController.text} ${lastNameInputController.text}",
                   );
                 }
               },

@@ -16,12 +16,33 @@ class AuthenticationService {
   final ErrorLoggingApiService _errorLoggingApiService =
       ErrorLoggingApiService();
 
-  Future<String> registerUserWithEmailAndPassword(
-      {required String email,
-      required String password,
-      required String firstName,
-      required String lastName,
-      required String phoneNumber}) async {
+  Future<bool> saveUserToServer(
+      {required Map<String, dynamic> userInfo}) async {
+    print("lole: saving to server");
+    final Response response = await post(
+      Uri.parse(
+        "$loleBaseUrl/client",
+      ),
+      body: userInfo,
+    );
+
+    print("lole-view: ${response.statusCode}");
+    print("lole-view: ${response.body}");
+
+    if (response.statusCode == 201 || response.statusCode == 400) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<String> registerUserWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+  }) async {
     try {
       // try firebase auth call
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -35,6 +56,15 @@ class AuthenticationService {
       };
       _utilService.saveInfoToCache(
           value: userInfo.toString(), key: "currentUser");
+
+      await saveUserToServer(userInfo: {
+        "FBUID": FirebaseAuth.instance.currentUser!.uid,
+        "client_fullName": "$firstName $lastName",
+        "client_phone_number": phoneNumber == "" ? "0" : phoneNumber,
+        "client_email": email,
+        "clienttotal_mileage": "0",
+        "trip_count": "0"
+      });
 
       kShowToast(message: "Registration successful");
 
@@ -68,14 +98,6 @@ class AuthenticationService {
     }
   }
 
-  Future<bool> saveUserToServer() async {
-    final Response response = await post(
-      Uri.parse("$loleBaseUrl/client"),
-    );
-
-    return true;
-  }
-
   Future<String> loginUserWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
@@ -104,7 +126,7 @@ class AuthenticationService {
       } else if (e.code == "invalid-email") {
         _errorLoggingApiService.logErrorToServer(
           fileName: fileName,
-          functionName: "logIn",
+          functionName: "loginUserWithEmailAndPassword",
           errorInfo: e.toString(),
         );
         return "Something Went Wrong";
@@ -112,7 +134,7 @@ class AuthenticationService {
     } catch (e) {
       _errorLoggingApiService.logErrorToServer(
         fileName: fileName,
-        functionName: "logIn",
+        functionName: "loginUserWithEmailAndPassword",
         errorInfo: e.toString(),
       );
     }
@@ -147,12 +169,22 @@ class AuthenticationService {
       _utilService.saveInfoToCache(
           value: userInfo.toString(), key: "currentUser");
 
+      await saveUserToServer(userInfo: {
+        "FBUID": FirebaseAuth.instance.currentUser!.uid,
+        "client_fullName": FirebaseAuth.instance.currentUser!.displayName ?? '',
+        "client_phone_number":
+            FirebaseAuth.instance.currentUser!.phoneNumber ?? "00",
+        "client_email": FirebaseAuth.instance.currentUser!.email ?? '',
+        "clienttotal_mileage": "0",
+        "trip_count": "0"
+      });
+
       return "Successfully Logged In";
     } catch (e) {
       print(e);
       _errorLoggingApiService.logErrorToServer(
         fileName: fileName,
-        functionName: "logIn",
+        functionName: "loginUserWithGoogle",
         errorInfo: e.toString(),
       );
       kShowToast(message: "Could not log you in");
