@@ -6,6 +6,7 @@ import 'package:lole/constants/routes.dart';
 import 'package:lole/firebase_options.dart';
 import 'package:lole/services/api/UtilService.dart';
 import 'package:lole/services/provider/AuthenticationProvider.dart';
+import 'package:lole/services/provider/OtherProvider.dart';
 import 'package:lole/services/provider/TrackingProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => TrackingProvider()),
+        ChangeNotifierProvider(create: ( _) => OtherProvider())
       ],
       child: const LoleApp(),
     ),

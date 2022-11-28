@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lole/services/api/TrackingService.dart';
+import 'package:lole/services/models/Trip.dart';
 
 class TrackingProvider extends ChangeNotifier {
   bool isLoading = false;
@@ -21,13 +22,34 @@ class TrackingProvider extends ChangeNotifier {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> streamDriverLocation() {
     isLoading = true;
-    notifyListeners();
+    
 
     var result = _trackingService.streamDriverLocation();
 
     isLoading = false;
-    notifyListeners();
+    
 
     return result;
+  }
+  Future<List<Map<String, dynamic>>> getAllDriversLocation() async {
+    isLoading = true;
+    notifyListeners();
+
+    var drivers = await _trackingService.getAllDriverLocations();
+
+    isLoading = false;
+    notifyListeners();
+
+    return drivers;
+  }
+  Future updateJobForDriver(
+      {required String jobId, required String driverId,required Trip trifInfo}) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _trackingService.updateJobForDriver(jobId: jobId, driverId: driverId,tripInfo: trifInfo);
+
+    isLoading = false;
+    notifyListeners();
   }
 }
